@@ -13,13 +13,35 @@ function save() {
     'faqs': document.getElementById('faqs').checked,
     'speech-voice': document.getElementById('speech-voice').value,
     'speech-rate': Math.max(Math.min(Number(document.getElementById('speech-rate').value), 3), 0.5),
-    'speech-pitch': Math.max(Math.min(Number(document.getElementById('speech-pitch').value), 2), 0)
+    'speech-pitch': Math.max(Math.min(Number(document.getElementById('speech-pitch').value), 2), 0),
+    'schedule-background': document.getElementById('schedule-background').checked,
+    'dark-time': document.getElementById('dark-time').value,
+    'sepia-time': document.getElementById('sepia-time').value,
+    'light-time': document.getElementById('light-time').value
   }, () => {
     const status = document.getElementById('status');
     status.textContent = 'Options saved.';
     setTimeout(() => status.textContent = '', 750);
   });
 }
+
+function setScheduleOptions() {
+  function makeOption(i) {
+    const hourString = `${(i % 12) + 1}:00 ${(i >= 12) ? "PM" : "AM"}`
+    const option = document.createElement('option')
+    option.value = i + 1
+    option.textContent = hourString
+    return option
+  }
+  // generate the time options, one per hour, for the dark, light, and sepia select boxes
+  for (let i = 0; i < 24; i++) {
+
+    document.getElementById('light-time').appendChild(makeOption(i)) 
+    document.getElementById('dark-time').appendChild(makeOption(i))
+    document.getElementById('sepia-time').appendChild(makeOption(i)) 
+  }
+}
+setScheduleOptions()
 
 speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices().forEach(o => {
   const option = document.createElement('option');
@@ -38,6 +60,10 @@ function restore() {
     document.getElementById('speech-pitch').value = prefs['speech-pitch'];
     document.getElementById('speech-rate').value = prefs['speech-rate'];
     document.getElementById('speech-voice').value = prefs['speech-voice'];
+    document.getElementById('schedule-background').checked = prefs['schedule-background'];
+    document.getElementById('dark-time').value = prefs['dark-time'];
+    document.getElementById('sepia-time').value = prefs['sepia-time'];
+    document.getElementById('light-time').value = prefs['light-time'];
   });
 }
 config.load(restore);
@@ -72,3 +98,4 @@ else if (navigator.userAgent.indexOf('OPR') !== -1) {
 }
 
 document.getElementById('ref').href = chrome.runtime.getManifest().homepage_url + '#faq5';
+

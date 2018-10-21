@@ -15,7 +15,11 @@ config.prefs = {
   'last-update': 0,
   'speech-voice': 'default', // 0 - 2
   'speech-pitch': 1, // 0 - 2
-  'speech-rate': 1 // 0.1 - 10
+  'speech-rate': 1, // 0.1 - 10,
+  'schedule-background': false, // is used to change the reader background color on a timed schedule
+  'dark-time': 8,
+  'sepia-time': 8,
+  'light-time': 8
 };
 
 chrome.storage.onChanged.addListener(prefs => {
