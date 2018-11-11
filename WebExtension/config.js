@@ -17,6 +17,7 @@ config.prefs = {
   'speech-pitch': 1, // 0 - 2
   'speech-rate': 1, // 0.1 - 10,
   'schedule-background': false, // is used to change the reader background color on a timed schedule
+  'mode': 'light',
   'dark-time': 8,
   'sepia-time': 8,
   'light-time': 8

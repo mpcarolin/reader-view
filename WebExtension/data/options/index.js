@@ -25,20 +25,90 @@ function save() {
   });
 }
 
+// mode: dark, sepia, or light
+// hour: 1-24
+// modulo function that handles negatives properly.
+function realModulo(num, modulo) {
+  return ((num % modulo) + modulo) % modulo
+}
+
+function getModeTimes(prefs) {
+  const darkHour = parseInt(prefs['dark-time'])
+  const sepiaHour = parseInt(prefs['sepia-time'])
+  const lightHour = parseInt(prefs['light-time'])
+
+  let times = [
+    new ModeTime('dark', darkHour),
+    new ModeTime('sepia', sepiaHour),
+    new ModeTime('light', lightHour)
+  ]
+
+  return times
+    .filter(mode => (mode.hour > -1))
+    .sort((a, b) => a.compareTo(b))
+}
+
+function getCurrentMode(modeTimes, currentHour) {
+    for (var i = 0; i < times.length; i++) {
+      let modeTime = times[i]
+      if (modeTime.hour < 0) continue // ignore modes the user selected to be 'never'
+      if (modeTime.hour > currentHour)
+    }
+}
+
+const handleModeAlarm = (alarm) => {
+  console.log('handling alarm ' + alarm.name)
+  if (alarm.name !== 'mode-timer') return
+
+  const localStorage = chrome.storage.local
+
+  localStorage.get(config.prefs, prefs => {
+    if (!prefs['schedule-background']) return
+  
+    const hour = new Date().getHours()
+    let times = getModeTimes(prefs)
+
+
+    if (hour === darkHour) {
+      console.log('setting mode to dark')
+      localStorage.set({'mode': 'dark'})
+    } else if (hour === sepiaHour) {
+      console.log('setting mode to sepia')
+      localStorage.set({'mode': 'sepia'})
+    } else if (hour === lightHour) {
+      console.log('setting mode to light')
+      localStorage.set({'mode': 'light'})
+    }
+  })
+}
+
+chrome.alarms.create('mode-timer', { periodInMinutes: 1 }) // check the time once a minute
+chrome.alarms.onAlarm.addListener(handleModeAlarm)
+
 function setScheduleOptions() {
-  function makeOption(i) {
-    const hourString = `${(i % 12) + 1}:00 ${(i >= 12) ? "PM" : "AM"}`
+  const hourString = (hour) => {
+    if ((hour % 12) === 0) return `12:00 ${(hour >= 12) ? "PM" : "AM"}` 
+    return `${(hour % 12)}:00 ${(hour >= 12) ? "PM" : "AM"}`
+  } 
+
+  function makeOption(hour, text) {
     const option = document.createElement('option')
-    option.value = i + 1
-    option.textContent = hourString
+    option.value = hour
+    option.textContent = text
     return option
   }
-  // generate the time options, one per hour, for the dark, light, and sepia select boxes
-  for (let i = 0; i < 24; i++) {
 
-    document.getElementById('light-time').appendChild(makeOption(i)) 
-    document.getElementById('dark-time').appendChild(makeOption(i))
-    document.getElementById('sepia-time').appendChild(makeOption(i)) 
+  // generates a 'Never' option with a value of -2 
+  document.getElementById('light-time').appendChild(makeOption(-2, "Never")) 
+  document.getElementById('dark-time').appendChild(makeOption(-2, "Never"))
+  document.getElementById('sepia-time').appendChild(makeOption(-2, "Never")) 
+
+  // generate the time options, one per hour, for the dark, light, and sepia select boxes.
+  for (let i = 0; i < 24; i++) {
+    let text = hourString(i)
+    document.getElementById('light-time').appendChild(makeOption(i, text)) 
+    document.getElementById('dark-time').appendChild(makeOption(i, text))
+    document.getElementById('sepia-time').appendChild(makeOption(i, text)) 
   }
 }
 setScheduleOptions()

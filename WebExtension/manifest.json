@@ -11,7 +11,8 @@
     "contextMenus",
     "*://*/*",
     "chrome://favicon/",
-    "notifications"
+    "notifications",
+    "alarms"
   ],
   "background": {
     "persist": false,
