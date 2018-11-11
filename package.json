@@ -1,0 +1,29 @@
+{
+  "name": "scheduled-reader-view",
+  "version": "1.0.0",
+  "description": "Fork of rNeomy's reader-view extension for chrome that adds a scheduled system for themes.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mpcarolin/reader-view.git"
+  },
+  "keywords": [
+    "reader",
+    "view",
+    "themes",
+    "schedules",
+    "modes"
+  ],
+  "author": "mpcarolin",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/mpcarolin/reader-view/issues"
+  },
+  "homepage": "https://github.com/mpcarolin/reader-view#readme",
+  "dependencies": {
+    "mode-time": "^1.0.1"
+  }
+}
