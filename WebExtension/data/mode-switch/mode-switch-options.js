@@ -1,4 +1,4 @@
-// updates the mode timer options in the options page
+// updates each select box's options in the options page for the modes
 function setScheduleOptions() {
   const makeHourString = (hour) => {
     if ((hour % 12) === 0) return `12:00 ${(hour >= 12) ? "PM" : "AM"}` 
@@ -34,12 +34,10 @@ function restoreOptionSelections() {
   });
 }
 
-// show: boolean
 function showScheduleOptions(shouldShow) {
   let styles = ["dark-tr", "sepia-tr", "light-tr"].map(id => document.getElementById(id).style)
   for (let i = 0; i < styles.length; i++) {
-    let style = styles[i] 
-    style.display = shouldShow ? 'table-row' : 'none'
+    styles[i].display = shouldShow ? 'table-row' : 'none'
   }
   if (shouldShow) {
     setScheduleOptions() 

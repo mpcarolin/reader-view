@@ -2,6 +2,7 @@
 'use strict';
 
 const { setScheduleOptions, showScheduleOptions } = require('../mode-switch/mode-switch-options.js')
+const { updateMode } = require('../mode-switch/mode-switch.js')
 
 function save() {
   localStorage.setItem('top-css', document.getElementById('top-style').value || '');
@@ -25,11 +26,13 @@ function save() {
     status.textContent = 'Options saved.';
     setTimeout(() => status.textContent = '', 750);
   });
+
+  // immediately set the new mode to run in reader view depending on the time.
+  chrome.storage.local.get(config.prefs, prefs => updateMode(prefs))
 }
 
-// TODO: make this only happen if schedule-background is selected. Hide otherwise!
 // create the select box options for the extension's options index page
-chrome.storage.local.get(prefs => {
+chrome.storage.local.get(config.prefs, prefs => {
   if (prefs['schedule-background']) {
     setScheduleOptions()
   } else {
@@ -37,6 +40,7 @@ chrome.storage.local.get(prefs => {
   }
 })
 
+// event listener on the schedule-background checkbox to show/hide the select boxes
 document.getElementById('schedule-background').addEventListener('change', ($event) => {
   let isChecked = $event.target.checked
   showScheduleOptions(isChecked)
