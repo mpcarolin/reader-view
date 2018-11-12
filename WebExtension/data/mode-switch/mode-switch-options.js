@@ -27,4 +27,16 @@ function setScheduleOptions() {
   }
 }
 
-module.exports = { setScheduleOptions }
+// show: boolean
+function showScheduleOptions(shouldShow) {
+  let styles = ["dark-tr", "sepia-tr", "light-tr"].map(id => document.getElementById(id).style)
+  for (let i = 0; i < styles.length; i++) {
+    let style = styles[i] 
+    style.display = shouldShow ? 'block' : 'none'
+  }
+  if (shouldShow) {
+    setScheduleOptions() 
+  }
+}
+
+module.exports = { setScheduleOptions, showScheduleOptions }

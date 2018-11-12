@@ -28,12 +28,21 @@ function setScheduleOptions() {
   }
 }
 
-module.exports = { setScheduleOptions }
+// show: boolean
+function showScheduleOptions(shouldShow) {
+  let styles = ["dark-tr", "sepia-tr", "light-tr"].map(id => document.getElementById(id).style)
+  for (let i = 0; i < styles.length; i++) {
+    let style = styles[i] 
+    style.display = shouldShow ? 'block' : 'none'
+  }
+}
+
+module.exports = { setScheduleOptions, showScheduleOptions }
 },{}],2:[function(require,module,exports){
 /* globals config */
 'use strict';
 
-const { setScheduleOptions } = require('../mode-switch/mode-switch-options.js')
+const { setScheduleOptions, showScheduleOptions } = require('../mode-switch/mode-switch-options.js')
 
 function save() {
   localStorage.setItem('top-css', document.getElementById('top-style').value || '');
@@ -61,7 +70,21 @@ function save() {
 
 // TODO: make this only happen if schedule-background is selected. Hide otherwise!
 // create the select box options for the extension's options index page
-setScheduleOptions()
+chrome.storage.local.get(prefs => {
+  if (prefs['schedule-background']) {
+    setScheduleOptions()
+  } else {
+    showScheduleOptions(false)
+  }
+})
+
+document.getElementById('schedule-background').addEventListener('change', ($event) => {
+  let isChecked = $event.target.checked
+  console.log(`is checked: ${isChecked}`)
+  showScheduleOptions(isChecked)
+})
+
+
 
 speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices().forEach(o => {
   const option = document.createElement('option');
