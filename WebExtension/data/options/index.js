@@ -1,7 +1,7 @@
 /* globals config */
 'use strict';
 
-const { createModeTimer } = require('mode-switch')
+const { setScheduleOptions } = require('../mode-switch/mode-switch-options.js')
 
 function save() {
   localStorage.setItem('top-css', document.getElementById('top-style').value || '');
@@ -27,35 +27,8 @@ function save() {
   });
 }
 
-// create a theme mode-switching timer, checking for an hour change once a minute.
-createModeTimer('mode-timer', 1)
-
-function setScheduleOptions() {
-  const hourString = (hour) => {
-    if ((hour % 12) === 0) return `12:00 ${(hour >= 12) ? "PM" : "AM"}` 
-    return `${(hour % 12)}:00 ${(hour >= 12) ? "PM" : "AM"}`
-  } 
-
-  function makeOption(hour, text) {
-    const option = document.createElement('option')
-    option.value = hour
-    option.textContent = text
-    return option
-  }
-
-  // generates a 'Never' option with a value of -2 
-  document.getElementById('light-time').appendChild(makeOption(-2, "Never")) 
-  document.getElementById('dark-time').appendChild(makeOption(-2, "Never"))
-  document.getElementById('sepia-time').appendChild(makeOption(-2, "Never")) 
-
-  // generate the time options, one per hour, for the dark, light, and sepia select boxes.
-  for (let i = 0; i < 24; i++) {
-    let text = hourString(i)
-    document.getElementById('light-time').appendChild(makeOption(i, text)) 
-    document.getElementById('dark-time').appendChild(makeOption(i, text))
-    document.getElementById('sepia-time').appendChild(makeOption(i, text)) 
-  }
-}
+// TODO: make this only happen if schedule-background is selected. Hide otherwise!
+// create the select box options for the extension's options index page
 setScheduleOptions()
 
 speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices().forEach(o => {

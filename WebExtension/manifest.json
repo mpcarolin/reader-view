@@ -18,7 +18,8 @@
     "persist": false,
     "scripts": [
       "config.js",
-      "common.js"
+      "common.js",
+      "data/mode-switch/bundle.js"
     ]
   },
   "page_action": {
