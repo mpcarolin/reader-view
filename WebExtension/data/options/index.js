@@ -39,11 +39,8 @@ chrome.storage.local.get(prefs => {
 
 document.getElementById('schedule-background').addEventListener('change', ($event) => {
   let isChecked = $event.target.checked
-  console.log(`is checked: ${isChecked}`)
   showScheduleOptions(isChecked)
 })
-
-
 
 speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices().forEach(o => {
   const option = document.createElement('option');

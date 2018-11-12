@@ -1,7 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 // updates the mode timer options in the options page
 function setScheduleOptions() {
-  console.log('setting schedule options')
   const makeHourString = (hour) => {
     if ((hour % 12) === 0) return `12:00 ${(hour >= 12) ? "PM" : "AM"}` 
     return `${(hour % 12)}:00 ${(hour >= 12) ? "PM" : "AM"}`
@@ -28,12 +27,24 @@ function setScheduleOptions() {
   }
 }
 
+function restoreOptionSelections() {
+  chrome.storage.local.get(config.prefs, prefs => {
+    document.getElementById('dark-time').value = prefs['dark-time'];
+    document.getElementById('sepia-time').value = prefs['sepia-time'];
+    document.getElementById('light-time').value = prefs['light-time'];
+  });
+}
+
 // show: boolean
 function showScheduleOptions(shouldShow) {
   let styles = ["dark-tr", "sepia-tr", "light-tr"].map(id => document.getElementById(id).style)
   for (let i = 0; i < styles.length; i++) {
     let style = styles[i] 
-    style.display = shouldShow ? 'block' : 'none'
+    style.display = shouldShow ? 'table-row' : 'none'
+  }
+  if (shouldShow) {
+    setScheduleOptions() 
+    restoreOptionSelections()
   }
 }
 
@@ -80,11 +91,8 @@ chrome.storage.local.get(prefs => {
 
 document.getElementById('schedule-background').addEventListener('change', ($event) => {
   let isChecked = $event.target.checked
-  console.log(`is checked: ${isChecked}`)
   showScheduleOptions(isChecked)
 })
-
-
 
 speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices().forEach(o => {
   const option = document.createElement('option');
