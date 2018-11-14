@@ -22,11 +22,11 @@ function updateMode(prefs) {
 
   let modeTimes = getModeTimes(prefs)
   const hour = new Date().getHours()
-  const currentMode = modeTimes.getModeByHour(hour)
+  const currentMode = modeTimes.getModeByTime(hour)
 
   console.log(`setting mode to ${currentMode.toString()}`)
   localStorage.setItem('mode', currentMode.name);
-}
+
 
 // callback for alarm to update the mode, if the hour has changed to a new mode's time range
 const handleModeAlarm = (alarm) => {
