@@ -2,33 +2,35 @@ const { ModeTimes } = require('mode-time')
 
 const TIMER_NAME = "mode-timer"
 
-// pulls out the starting hours for each mode, and adds it to the ModeTimes object with a mode name
+// extracts each mode's starting time, and adds it to the ModeTimes object with a unique key
 function getModeTimes(prefs) {
-  const darkHour = parseInt(prefs['dark-time'])
-  const sepiaHour = parseInt(prefs['sepia-time'])
-  const lightHour = parseInt(prefs['light-time'])
+  const darkTime = parseInt(prefs['dark-time'])
+  const sepiaTime = parseInt(prefs['sepia-time'])
+  const lightTime = parseInt(prefs['light-time'])
 
   const times = new ModeTimes()
-  times.put('dark', darkHour)
-  times.put('sepia', sepiaHour)
-  times.put('light', lightHour)
+  times.putTimeString('dark', darkTime)
+  times.putTimeString('sepia', sepiaTime)
+  times.putTimeString('light', lightTime)
 
   return times
 }
 
-// updates the mode using the ModeTimes module, so long as the user checked 'schedule-background'
+// updates the mode if a different mode should be active, so long as the user checked 'schedule-background'
 function updateMode(prefs) {
   if (!prefs['schedule-background']) return
 
-  let modeTimes = getModeTimes(prefs)
-  const hour = new Date().getHours()
-  const currentMode = modeTimes.getModeByTime(hour)
+  const modeTimes = getModeTimes(prefs)
+  const date = new Date()
+  const hour = date.getHours()
+  const minutes = date.getMinutes()
+  const currentMode = modeTimes.getModeByTime(hour, minutes)
 
   console.log(`setting mode to ${currentMode.toString()}`)
   localStorage.setItem('mode', currentMode.name);
 
 
-// callback for alarm to update the mode, if the hour has changed to a new mode's time range
+// callback for alarm to update the mode, if the current time is covered by a different mode's time range
 const handleModeAlarm = (alarm) => {
   console.log('alarm cb called')
   if (alarm.name === TIMER_NAME) {
@@ -40,7 +42,7 @@ const handleModeAlarm = (alarm) => {
 // creates the alarm that will switch the reader theme modes at the user-defined times
 function createModeTimer(alarmPeriodInMinutes) {
   console.log('creating mode timer')
-  chrome.alarms.create(TIMER_NAME, { periodInMinutes: alarmPeriodInMinutes }) // check the time once a minute
+  chrome.alarms.create(TIMER_NAME, { periodInMinutes: alarmPeriodInMinutes })
   chrome.alarms.onAlarm.addListener(handleModeAlarm)
 }
 
